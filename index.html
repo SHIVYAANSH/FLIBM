@@ -45,6 +45,7 @@
         }
 
         #Tool-Message {
+            margin-top:15px;
             position: fixed; /* Fixed position to make it float */
             bottom: 100; /* Adjust the distance from the bottom as needed */
             left: 50%; /* Center horizontally */
@@ -260,15 +261,95 @@
             #blue{
                 background-color: #ffbc04c8;
             }
-        
+
+            #Shivi{
                 
+             color:#3e99fa;
+            font-size:20px;
+            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+        }
+        #loading-progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column; /* Align items vertically */
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            text-align: center; /* Ensure text is centered */
+            color: #fff; /* Light color for the text against the dark background */
+            font-size: 18px; /* Adjust based on preference */
+        }
+        
+        #loading-progress-bar {
+            width: 70%;
+            height: 20px;
+            margin-bottom: 20px; /* Adds space between the bar and the text */
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #loading-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(29,161,242,1) 0%, rgba(29,242,161,1) 50%, rgba(29,161,242,1) 100%);
+            animation: loading-progress-animation 2s infinite;
+        }
+        
+        @keyframes loading-progress-animation {
+            0% {
+                left: -100%;
+                width: 100%;
+            }
+            50% {
+                left: 0;
+                width: 100%;
+            }
+            100% {
+                left: 100%;
+                width: 100%;
+            }
+        }
+        
+        #loading-text{
+            color:#e2eef8da;
+        }
+        
+
+        #preview-button{
+            color:blue;
+        }            
+
+
+      
+        
+        
 
             
          
         </style>
 
+
 </head>
 <body>
+
+    
+
+    <div id="loading-progress-container">
+        <div id="loading-progress-bar"></div>
+        <p id="loading-text">Model Loading...</p>
+    </div>
+    
 
     
 
@@ -276,7 +357,10 @@
 
     <h1>
         <a href="index.html" style="color: #007bff; text-decoration: none;">
-            Hazardify.ai 
+            Hazardify.AI<br>
+            <div id="Shivi">
+            BY Shivyaansh
+            </div>
         </a>
     </h1>
     <i class="fas fa-moon theme-toggle" onclick="toggleTheme()"></i>
@@ -287,13 +371,13 @@
         <div id="file-upload-container">
             <input type="file" id="file-upload" accept="image/*"/>
             <label for="file-upload" class="custom-file-upload">Choose file</label>
-            <button id="preview-button">Preview Image</button>
+            <button id="">Preview Image</button>
         </div>
         <div id="label1">
             <div id="label-container"></div>
         </div>
     </div>
-    <img id="image-preview" src="#" alt="Image Preview">
+   
 
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
@@ -304,6 +388,33 @@
         // Define a set of colors
         const classColors = ["#008000", "#2C3E50", "#DAA520", "#E67E22", "#1B2631", "#154360", "#2E8B57"];
 
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('loading-progress-container').style.display = 'none';
+            }, 10000); // Hide after 10 seconds
+        });
+
+        document.getElementById('file-upload').addEventListener('change', function(event) {
+            if (event.target.files.length > 0) {
+                const file = event.target.files[0];
+                const reader = new FileReader();
+        
+                reader.onload = function(e) {
+                    // Display the image in the `#image-preview` element
+                    const imagePreview = document.getElementById('image-preview');
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block'; // Make the preview visible
+        
+                    // Proceed with your prediction logic here
+                    // Assuming predict function exists and is ready to handle the image
+                    predict(e.target.result); // If predict function accepts a data URL
+                };
+        
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        
 
     
         async function init() {
@@ -390,11 +501,13 @@
                 themeToggleIcon.classList.add('fa-moon');
             }
         }
+
+
     </script>
     
     
     <div id="Tool-Message">
-        ⚠️This tool is under working phase.
+        ⚠️This tool is currently under developement.
     </div>
 
     <div id="warning-message">
